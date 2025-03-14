@@ -87,7 +87,7 @@ jobs:
 # This is used by the next build job.
   targets:
     name: create targets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     outputs:
       matrix: ${{ steps.targets.outputs.matrix }}
     steps:
@@ -179,12 +179,12 @@ jobs:
 # This job builds the base and assets images. The build cache is stored in the ghcr.io registry.
   build-base-assets-arm:
     name: ARM - build intermediate
-    if: contains(inputs.architecture, 'linux/arm64/v8,linux/arm/v7')
+    if: contains(inputs.architecture, 'linux/arm64')
     strategy:
       fail-fast: false
       matrix:
         target: ["base", "assets"]
-    runs-on: self-hosted
+    runs-on: ubuntu-24.04-arm
     permissions:
      contents: read
      packages: write
@@ -217,7 +217,7 @@ jobs:
           PINNED_MAILU_VERSION: ${{ env.PINNED_MAILU_VERSION }}-build-arm
           LABEL_VERSION: ${{ env.MAILU_VERSION }}
           PINNED_LABEL_VERSION: ${{ env.PINNED_MAILU_VERSION }}
-          ARCH: linux/arm64/v8,linux/arm/v7
+          ARCH: linux/arm64
           BUILDER: ${{ steps.uuid.outputs.uuid }}
           DOCKER_LOGIN2: ${{ secrets.Docker_Login2 }}
           DOCKER_PASSW2: ${{ secrets.Docker_Password2 }}
@@ -331,7 +331,7 @@ jobs:
 # This job builds the main images. The build cache is stored in the ghcr.io registry.
   build-arm:
     name: ARM - build
-    if: contains(inputs.architecture, 'linux/arm64/v8,linux/arm/v7')
+    if: contains(inputs.architecture, 'linux/arm64')
     needs:
       - targets
       - build-base-assets-arm
@@ -339,7 +339,7 @@ jobs:
       fail-fast: false
       matrix:
         target: ${{ fromJson(needs.targets.outputs.matrix) }}
-    runs-on: self-hosted
+    runs-on: ubuntu-24.04-arm
     permissions:
      contents: read
      packages: write
@@ -466,7 +466,7 @@ jobs:
     name: Deploy images
     # Deploying is not required for staging
     if: inputs.deploy == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs:
       - build
       - build-arm
@@ -535,7 +535,7 @@ jobs:
 #This job creates a tagged release. A tag is created for the pinned version x.y.z. The GH release refers to this tag.
   tag-release:
     if: inputs.release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs:
       - deploy
     steps:
