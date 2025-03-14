@@ -19,7 +19,7 @@ jobs:
 # All subsequent jobs will retrieve and use these variables. This way the variables only have to be derived once.
   derive-variables:
     name: derive variables
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     outputs:
         MAILU_VERSION: ${{ env.MAILU_VERSION }}
         PINNED_MAILU_VERSION: ${{ env.PINNED_MAILU_VERSION }}
@@ -83,7 +83,7 @@ jobs:
       - derive-variables
     uses: ./.github/workflows/build_test_deploy.yml
     with:
-      architecture: 'linux/amd64,linux/arm64/v8,linux/arm/v7'
+      architecture: 'linux/arm64/v8'
       mailu_version: ${{needs.derive-variables.outputs.MAILU_VERSION}}
       pinned_mailu_version: ${{needs.derive-variables.outputs.PINNED_MAILU_VERSION}}
       docker_org: ${{needs.derive-variables.outputs.DOCKER_ORG}}
