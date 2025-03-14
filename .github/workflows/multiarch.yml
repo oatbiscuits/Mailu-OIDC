@@ -12,7 +12,7 @@ concurrency: ci-multiarch-${{ github.ref }}
 # DOCKER_ORG, docker org used for pushing images.
 env:
   # [OIDC] Required for pushing images to ghcr.io
-  DOCKER_ORG: ghcr.io/heviat
+  DOCKER_ORG: ghcr.io/oatbiscuits
 
 jobs:
 # This job calculates all global job variables that are required by all the subsequent jobs.
